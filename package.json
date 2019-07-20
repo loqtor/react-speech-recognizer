@@ -1,0 +1,32 @@
+{
+  "name": "speech-recognizer",
+  "version": "1.0.0",
+  "description": "React component for Speech Recognition based on Speech Recognition Web API.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loqtor/speech-recognizer.git"
+  },
+  "keywords": [
+    "speechrecognition",
+    "speechrecognitionapi",
+    "webspeechapi",
+    "webapi"
+  ],
+  "author": "Martin Martinez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/loqtor/speech-recognizer/issues"
+  },
+  "homepage": "https://github.com/loqtor/speech-recognizer#readme",
+  "devDependencies": {
+    "@types/react": "^16.8.23",
+    "@types/react-dom": "^16.8.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "typescript": "^3.5.3"
+  }
+}
