@@ -48,7 +48,5 @@ declare class SpeechRecognizer extends Component<IRecognizerProps, IRecognizerSt
 }
 
 declare module 'speech-recognizer' {
-  namespace SpeechRecognizer {
-    
-  }
+  export = SpeechRecognizer;
 }
