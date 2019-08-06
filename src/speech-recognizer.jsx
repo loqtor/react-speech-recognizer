@@ -9,8 +9,8 @@ const DEFAULT_CONFIG = {
   lang: 'en-NZ',
 };
 
-export const Recognizer = class Recognizer extends Component<IRecognizerProps, IRecognizerState> {
-  constructor(props: IRecognizerProps) {
+export const Recognizer = class Recognizer extends Component {
+  constructor(props) {
     super(props);
 
     const {
@@ -41,9 +41,9 @@ export const Recognizer = class Recognizer extends Component<IRecognizerProps, I
     speechRecognizer.maxAlternatives = maxAlternatives || DEFAULT_CONFIG.maxAlternatives;
     speechRecognizer.lang = lang || DEFAULT_CONFIG;
 
-    speechRecognizer.onstart = (e: SpeechRecognitionEvent) => this.onStart(e);
-    speechRecognizer.onresult = (e: SpeechRecognitionEvent) => this.onResult(e);
-    speechRecognizer.onerror = (e: SpeechRecognitionError) => this.onError(e);
+    speechRecognizer.onstart = (event) => this.onStart(event);
+    speechRecognizer.onresult = (event) => this.onResult(event);
+    speechRecognizer.onerror = (error) => this.onError(error);
     
     this.state = {
       speechRecognizer,
@@ -54,7 +54,7 @@ export const Recognizer = class Recognizer extends Component<IRecognizerProps, I
     }
   }
 
-  onStart = (event: SpeechRecognitionEvent) => {
+  onStart = (event) => {
     this.setState({
       status: RecognizerStatus.RECOGNIZING,
     }, () => {
@@ -66,7 +66,7 @@ export const Recognizer = class Recognizer extends Component<IRecognizerProps, I
     });
   }
 
-  onResult = (event: SpeechRecognitionEvent) => {
+  onResult = (event) => {
     const { results } = event;
     const { formatResults, onResult } = this.props;
     const formattedResults = formatResults ? formatResults(results) : results;
@@ -85,7 +85,7 @@ export const Recognizer = class Recognizer extends Component<IRecognizerProps, I
     });
   }
 
-  onError = (error: SpeechRecognitionError) => {
+  onError = (error) => {
     this.setState({
       error,
       status: RecognizerStatus.FAILED,
@@ -135,7 +135,7 @@ export const Recognizer = class Recognizer extends Component<IRecognizerProps, I
       <Fragment>
         <h2>Transcripts from speech:</h2>
         <ul>
-          {transcripts.map((transcript: string, i: number) => {
+          {transcripts.map((transcript, i) => {
             return (
               <li key={`transcript-${i}`}>{transcript}</li>
             )
