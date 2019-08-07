@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Recognizer = exports.RecognizerStatus = void 0;
+exports.SpeechRecognizer = exports.SpeechRecognizerStatus = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -39,28 +39,28 @@ var DEFAULT_CONFIG = {
   maxAlternatives: 1,
   lang: 'en-NZ'
 };
-var RecognizerStatus = {
+var SpeechRecognizerStatus = {
   INACTIVE: 0,
   RECOGNIZING: 1,
   STOPPED: 2,
   FAILED: 3
 };
-exports.RecognizerStatus = RecognizerStatus;
-var Recognizer = (_temp =
+exports.SpeechRecognizerStatus = SpeechRecognizerStatus;
+var SpeechRecognizer = (_temp =
 /*#__PURE__*/
 function (_Component) {
-  _inherits(Recognizer, _Component);
+  _inherits(SpeechRecognizer, _Component);
 
-  function Recognizer(props) {
+  function SpeechRecognizer(props) {
     var _this;
 
-    _classCallCheck(this, Recognizer);
+    _classCallCheck(this, SpeechRecognizer);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Recognizer).call(this, props));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(SpeechRecognizer).call(this, props));
 
     _defineProperty(_assertThisInitialized(_this), "onStart", function (event) {
       _this.setState({
-        status: RecognizerStatus.RECOGNIZING
+        status: SpeechRecognizerStatus.RECOGNIZING
       }, function () {
         var onStart = _this.props.onStart;
 
@@ -94,7 +94,7 @@ function (_Component) {
     _defineProperty(_assertThisInitialized(_this), "onError", function (error) {
       _this.setState({
         error: error,
-        status: RecognizerStatus.FAILED
+        status: SpeechRecognizerStatus.FAILED
       }, function () {
         var onError = _this.props.onError;
 
@@ -181,7 +181,7 @@ function (_Component) {
 
     _this.state = {
       speechRecognizer: speechRecognizer,
-      status: startSpeechRecognition ? RecognizerStatus.RECOGNIZING : RecognizerStatus.INACTIVE,
+      status: startSpeechRecognition ? SpeechRecognizerStatus.RECOGNIZING : SpeechRecognizerStatus.INACTIVE,
       results: null,
       formattedResults: null,
       transcripts: []
@@ -189,27 +189,27 @@ function (_Component) {
     return _this;
   }
 
-  _createClass(Recognizer, [{
+  _createClass(SpeechRecognizer, [{
     key: "componentDidUpdate",
     value: function componentDidUpdate() {
       var status = this.state.status;
 
-      if (status === RecognizerStatus.FAILED) {
+      if (status === SpeechRecognizerStatus.FAILED) {
         return;
       }
 
       var startSpeechRecognition = this.props.startSpeechRecognition;
       var speechRecognizer = this.state.speechRecognizer;
 
-      if (startSpeechRecognition && status !== RecognizerStatus.RECOGNIZING) {
+      if (startSpeechRecognition && status !== SpeechRecognizerStatus.RECOGNIZING) {
         speechRecognizer.start();
         return;
       }
 
-      if (!startSpeechRecognition && status === RecognizerStatus.RECOGNIZING) {
+      if (!startSpeechRecognition && status === SpeechRecognizerStatus.RECOGNIZING) {
         speechRecognizer.stop();
         this.setState({
-          status: RecognizerStatus.STOPPED
+          status: SpeechRecognizerStatus.STOPPED
         });
       }
     }
@@ -225,16 +225,16 @@ function (_Component) {
         return null;
       }
 
-      if (status === RecognizerStatus.FAILED) {
+      if (status === SpeechRecognizerStatus.FAILED) {
         console.error('There has been an error trying to start recognizing: ', error);
         return null;
       }
 
-      if (status === RecognizerStatus.INACTIVE) {
+      if (status === SpeechRecognizerStatus.INACTIVE) {
         return this.renderInactiveStatus();
       }
 
-      if (status === RecognizerStatus.RECOGNIZING) {
+      if (status === SpeechRecognizerStatus.RECOGNIZING) {
         return this.renderRecognizingStatus();
       }
 
@@ -242,6 +242,6 @@ function (_Component) {
     }
   }]);
 
-  return Recognizer;
+  return SpeechRecognizer;
 }(_react.Component), _temp);
-exports.Recognizer = Recognizer;
+exports.SpeechRecognizer = SpeechRecognizer;
