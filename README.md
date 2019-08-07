@@ -15,7 +15,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import { SpeechRecognizer } from 'react-speech-recognizer';
+import { SpeechRecognizer } from 'react-speech-recognizer-component';
 
 function App() {
   return (
