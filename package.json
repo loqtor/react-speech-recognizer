@@ -1,5 +1,5 @@
 {
-  "name": "speech-recognizer",
+  "name": "react-speech-recognizer",
   "version": "1.0.0",
   "description": "React component for Speech Recognition based on Speech Recognition Web API.",
   "main": "dist/speech-recognizer.js",

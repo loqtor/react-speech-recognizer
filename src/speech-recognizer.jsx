@@ -8,14 +8,14 @@ const DEFAULT_CONFIG = {
   lang: 'en-NZ',
 };
 
-export const RecognizerStatus = {
+export const SpeechRecognizerStatus = {
   INACTIVE: 0,
   RECOGNIZING: 1,
   STOPPED: 2,
   FAILED: 3,
 }
 
-export const Recognizer = class Recognizer extends Component {
+export const SpeechRecognizer = class SpeechRecognizer extends Component {
   constructor(props) {
     super(props);
 
@@ -53,7 +53,7 @@ export const Recognizer = class Recognizer extends Component {
     
     this.state = {
       speechRecognizer,
-      status: startSpeechRecognition ? RecognizerStatus.RECOGNIZING : RecognizerStatus.INACTIVE,
+      status: startSpeechRecognition ? SpeechRecognizerStatus.RECOGNIZING : SpeechRecognizerStatus.INACTIVE,
       results: null,
       formattedResults: null,
       transcripts: [],
@@ -62,7 +62,7 @@ export const Recognizer = class Recognizer extends Component {
 
   onStart = (event) => {
     this.setState({
-      status: RecognizerStatus.RECOGNIZING,
+      status: SpeechRecognizerStatus.RECOGNIZING,
     }, () => {
       const { onStart } = this.props;
 
@@ -94,7 +94,7 @@ export const Recognizer = class Recognizer extends Component {
   onError = (error) => {
     this.setState({
       error,
-      status: RecognizerStatus.FAILED,
+      status: SpeechRecognizerStatus.FAILED,
     }, () => {
       const { onError } = this.props;
 
@@ -154,24 +154,24 @@ export const Recognizer = class Recognizer extends Component {
   componentDidUpdate() {
     const { status } = this.state;
 
-    if (status === RecognizerStatus.FAILED) {
+    if (status === SpeechRecognizerStatus.FAILED) {
       return;
     }
 
     const { startSpeechRecognition } = this.props;
     const { speechRecognizer } = this.state;
 
-    if (startSpeechRecognition && status !== RecognizerStatus.RECOGNIZING) {
+    if (startSpeechRecognition && status !== SpeechRecognizerStatus.RECOGNIZING) {
       speechRecognizer.start();
 
       return;
     }
 
-    if (!startSpeechRecognition && status === RecognizerStatus.RECOGNIZING) {
+    if (!startSpeechRecognition && status === SpeechRecognizerStatus.RECOGNIZING) {
       speechRecognizer.stop();
 
       this.setState({
-        status: RecognizerStatus.STOPPED,
+        status: SpeechRecognizerStatus.STOPPED,
       });
     }
   }
@@ -184,16 +184,16 @@ export const Recognizer = class Recognizer extends Component {
       return null;
     }
 
-    if (status === RecognizerStatus.FAILED) {
+    if (status === SpeechRecognizerStatus.FAILED) {
       console.error('There has been an error trying to start recognizing: ', error);
       return null;
     }
 
-    if (status === RecognizerStatus.INACTIVE) {
+    if (status === SpeechRecognizerStatus.INACTIVE) {
       return this.renderInactiveStatus();
     }
 
-    if (status === RecognizerStatus.RECOGNIZING) {
+    if (status === SpeechRecognizerStatus.RECOGNIZING) {
       return this.renderRecognizingStatus();
     }
 
