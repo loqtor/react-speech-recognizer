@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import { RecognizerStatus, IRecognizerProps, IRecognizerState } from '../index';
 import { extractTranscripts } from './util/speech-recognizer';
 
 const DEFAULT_CONFIG = {
@@ -8,6 +7,13 @@ const DEFAULT_CONFIG = {
   maxAlternatives: 1,
   lang: 'en-NZ',
 };
+
+export const RecognizerStatus = {
+  INACTIVE: 0,
+  RECOGNIZING: 1,
+  STOPPED: 2,
+  FAILED: 3,
+}
 
 export const Recognizer = class Recognizer extends Component {
   constructor(props) {
