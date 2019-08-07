@@ -73,5 +73,5 @@ There's also the option to render nothing and just use the callbacks and get tha
 
 1. Expose all of the `SpeechRecognition` events.
 2. Try to put this in TypeScript. I already have a branch in the repo where the entire thing is typed, but I could not get it to properly build into an npm Module.
-3. Actually, perhaps... Redesign the whole thing? I think this could be an enhancer. More like an HOC and take it from there. ut for now, I think it's cool. :)
+3. Actually, perhaps... Redesign the whole thing? I think this could be an Enhancer. More like an HOC and take it from there. But for now, I think it's cool. :)
 
