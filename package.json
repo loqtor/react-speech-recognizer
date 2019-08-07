@@ -2,10 +2,10 @@
   "name": "speech-recognizer",
   "version": "1.0.0",
   "description": "React component for Speech Recognition based on Speech Recognition Web API.",
-  "main": "index.js",
+  "main": "dist/speech-recognizer.js",
   "scripts": {
-    "build": "rm -rf ./lib && tsc --esModuleInterop",
-    "prepare": "yarn build",
+    "build": "babel src -d dist --copy-files",
+    "prepare": "npm run-script build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,10 +25,19 @@
   },
   "homepage": "https://github.com/loqtor/speech-recognizer#readme",
   "devDependencies": {
-    "@types/react": "^16.8.23",
-    "@types/react-dom": "^16.8.4",
+    "@babel/cli": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "css-loader": "^0.28.11",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "typescript": "^3.5.3"
+    "style-loader": "^0.20.3"
+  },
+  "dependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-syntax-jsx": "^7.2.0",
+    "@babel/plugin-transform-react-jsx": "^7.3.0",
+    "babel-loader": "^8.0.6"
   }
 }
