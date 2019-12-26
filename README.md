@@ -2,9 +2,9 @@
 
 ## React Component for Speech Recognition.
 
-As mentioned in the title, if you put this component anywhere in your page you'll get Speech Recognition capabilities.
+Place this component anywhere in your app to get Speech Recognition capabilities, when supported.
 
-It relies on the [Web Speech Recognition API](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition) and if it's not supported in the browser, it logs a `warn` and renders nothing.
+It relies on the [Web Speech Recognition API](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition) and if it's not supported in the browser, it logs a `warn`, renders nothing and calls the `onError` prop (if provided).
 
 It creates a `SpeechRecognition` instance internally and exposes its events through `props` in the component.
 
