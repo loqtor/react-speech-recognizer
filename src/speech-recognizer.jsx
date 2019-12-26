@@ -37,7 +37,12 @@ export const SpeechRecognizer = class SpeechRecognizer extends Component {
     }
 
     // @ts-ignore -- For now...
-    const speechRecognitionConstructor = window.webkitSpeechRecognition || window.SpeechRecognition;
+    const speechRecognitionConstructor = window.SpeechRecognition ||
+      window.webkitSpeechRecognition ||
+      window.mozSpeechRecognition ||
+      window.msSpeechRecognition ||
+      window.oSpeechRecognition;
+
     let speechRecognizer;
 
     try {

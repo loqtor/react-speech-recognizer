@@ -160,7 +160,7 @@ function (_Component) {
       error: null
     }; // @ts-ignore -- For now...
 
-    var speechRecognitionConstructor = window.webkitSpeechRecognition || window.SpeechRecognition;
+    var speechRecognitionConstructor = window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition || window.oSpeechRecognition;
     var speechRecognizer;
 
     try {
