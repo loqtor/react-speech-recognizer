@@ -43,15 +43,13 @@ export const SpeechRecognizer = class SpeechRecognizer extends Component {
       window.msSpeechRecognition ||
       window.oSpeechRecognition;
 
-    let speechRecognizer;
-
-    try {
-      speechRecognizer = new speechRecognitionConstructor();
-    } catch (error) {
+    if (!speechRecognitionConstructor) {
       this.state.status = SpeechRecognizerStatus.FAILED;
       this.state.error = error;
       return;
     }
+
+    let speechRecognizer = new speechRecognitionConstructor();
 
     if (grammars) {
       // @ts-ignore -- For now...
