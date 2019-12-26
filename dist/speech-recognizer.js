@@ -149,10 +149,23 @@ function (_Component) {
         continuous = props.continuous,
         interimResults = props.interimResults,
         maxAlternatives = props.maxAlternatives,
-        lang = props.lang; // @ts-ignore -- For now...
+        lang = props.lang;
+    _this.state = {
+      status: startSpeechRecognition ? SpeechRecognizerStatus.RECOGNIZING : SpeechRecognizerStatus.INACTIVE,
+      results: null,
+      formattedResults: null,
+      transcripts: [] // @ts-ignore -- For now...
 
+    };
     var speechRecognitionConstructor = window.webkitSpeechRecognition || window.SpeechRecognition;
-    var speechRecognizer = new speechRecognitionConstructor();
+    var speechRecognizer;
+
+    try {
+      speechRecognizer = new speechRecognitionConstructor();
+    } catch (error) {
+      _this.state.status = SpeechRecognizerStatus.FAILED;
+      return _possibleConstructorReturn(_this);
+    }
 
     if (grammars) {
       // @ts-ignore -- For now...
@@ -179,13 +192,7 @@ function (_Component) {
       return _this.onError(error);
     };
 
-    _this.state = {
-      speechRecognizer: speechRecognizer,
-      status: startSpeechRecognition ? SpeechRecognizerStatus.RECOGNIZING : SpeechRecognizerStatus.INACTIVE,
-      results: null,
-      formattedResults: null,
-      transcripts: []
-    };
+    _this.state.speechRecognizer = speechRecognizer;
     return _this;
   }
 

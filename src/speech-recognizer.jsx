@@ -28,9 +28,23 @@ export const SpeechRecognizer = class SpeechRecognizer extends Component {
       lang,
     } = props;
 
+    this.state = {
+      status: startSpeechRecognition ? SpeechRecognizerStatus.RECOGNIZING : SpeechRecognizerStatus.INACTIVE,
+      results: null,
+      formattedResults: null,
+      transcripts: [],
+    }
+
     // @ts-ignore -- For now...
     const speechRecognitionConstructor = window.webkitSpeechRecognition || window.SpeechRecognition;
-    const speechRecognizer = new speechRecognitionConstructor();
+    let speechRecognizer;
+
+    try {
+      speechRecognizer = new speechRecognitionConstructor();
+    } catch (error) {
+      this.state.status = SpeechRecognizerStatus.FAILED;
+      return;
+    }
 
     if (grammars) {
       // @ts-ignore -- For now...
@@ -51,13 +65,7 @@ export const SpeechRecognizer = class SpeechRecognizer extends Component {
     speechRecognizer.onresult = (event) => this.onResult(event);
     speechRecognizer.onerror = (error) => this.onError(error);
     
-    this.state = {
-      speechRecognizer,
-      status: startSpeechRecognition ? SpeechRecognizerStatus.RECOGNIZING : SpeechRecognizerStatus.INACTIVE,
-      results: null,
-      formattedResults: null,
-      transcripts: [],
-    }
+    this.state.speechRecognizer = speechRecognizer;
   }
 
   onStart = (event) => {
