@@ -161,15 +161,13 @@ function (_Component) {
     }; // @ts-ignore -- For now...
 
     var speechRecognitionConstructor = window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition || window.oSpeechRecognition;
-    var speechRecognizer;
 
-    try {
-      speechRecognizer = new speechRecognitionConstructor();
-    } catch (error) {
+    if (!speechRecognitionConstructor) {
       _this.state.status = SpeechRecognizerStatus.FAILED;
-      _this.state.error = error;
       return _possibleConstructorReturn(_this);
     }
+
+    var speechRecognizer = new speechRecognitionConstructor();
 
     if (grammars) {
       // @ts-ignore -- For now...
@@ -230,9 +228,8 @@ function (_Component) {
       var status = this.state.status;
 
       if (status === SpeechRecognizerStatus.FAILED) {
-        var error = this.state.error;
-        console.error("There was an error at initialisation. \n        Most likely related to SpeechRecognition not being supported by the current browser.\n        Check https://caniuse.com/#feat=speech-recognition for more info", error);
-        this.onError(error);
+        console.error("There was an error at initialisation. \n        Most likely related to SpeechRecognition not being supported by the current browser.\n        Check https://caniuse.com/#feat=speech-recognition for more info");
+        this.onError(null);
       }
     }
   }, {
