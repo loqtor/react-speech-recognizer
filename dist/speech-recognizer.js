@@ -11,7 +11,9 @@ var _speechRecognizer = require("./util/speech-recognizer");
 
 var _temp;
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj["default"] = obj; return newObj; } }
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -154,9 +156,10 @@ function (_Component) {
       status: startSpeechRecognition ? SpeechRecognizerStatus.RECOGNIZING : SpeechRecognizerStatus.INACTIVE,
       results: null,
       formattedResults: null,
-      transcripts: [] // @ts-ignore -- For now...
+      transcripts: [],
+      error: null
+    }; // @ts-ignore -- For now...
 
-    };
     var speechRecognitionConstructor = window.webkitSpeechRecognition || window.SpeechRecognition;
     var speechRecognizer;
 
@@ -164,6 +167,7 @@ function (_Component) {
       speechRecognizer = new speechRecognitionConstructor();
     } catch (error) {
       _this.state.status = SpeechRecognizerStatus.FAILED;
+      _this.state.error = error;
       return _possibleConstructorReturn(_this);
     }
 
@@ -218,6 +222,17 @@ function (_Component) {
         this.setState({
           status: SpeechRecognizerStatus.STOPPED
         });
+      }
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var status = this.state.status;
+
+      if (status === SpeechRecognizerStatus.FAILED) {
+        var error = this.state.error;
+        console.error("There was an error at initialisation. \n        Most likely related to SpeechRecognition not being supported by the current browser.\n        Check https://caniuse.com/#feat=speech-recognition for more info", error);
+        this.onError(error);
       }
     }
   }, {

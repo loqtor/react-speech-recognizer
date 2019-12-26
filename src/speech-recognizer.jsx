@@ -33,6 +33,7 @@ export const SpeechRecognizer = class SpeechRecognizer extends Component {
       results: null,
       formattedResults: null,
       transcripts: [],
+      error: null,
     }
 
     // @ts-ignore -- For now...
@@ -43,6 +44,7 @@ export const SpeechRecognizer = class SpeechRecognizer extends Component {
       speechRecognizer = new speechRecognitionConstructor();
     } catch (error) {
       this.state.status = SpeechRecognizerStatus.FAILED;
+      this.state.error = error;
       return;
     }
 
@@ -181,6 +183,23 @@ export const SpeechRecognizer = class SpeechRecognizer extends Component {
       this.setState({
         status: SpeechRecognizerStatus.STOPPED,
       });
+    }
+  }
+
+  componentDidMount() {
+    const { status } = this.state;
+
+    if (status === SpeechRecognizerStatus.FAILED) {
+      const { error } = this.state;
+
+      console.error(
+        `There was an error at initialisation. 
+        Most likely related to SpeechRecognition not being supported by the current browser.
+        Check https://caniuse.com/#feat=speech-recognition for more info`,
+        error
+      );
+
+      this.onError(error);
     }
   }
 
