@@ -7,7 +7,7 @@ exports.SpeechRecognizer = exports.SpeechRecognizerStatus = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
-var _speechRecognizer = require("./util/speech-recognizer");
+var _speechRecognizer2 = require("./util/speech-recognizer");
 
 var _temp;
 
@@ -45,7 +45,8 @@ var SpeechRecognizerStatus = {
   INACTIVE: 0,
   RECOGNIZING: 1,
   STOPPED: 2,
-  FAILED: 3
+  FAILED: 3,
+  UNSUPPORTED: 4
 };
 exports.SpeechRecognizerStatus = SpeechRecognizerStatus;
 var SpeechRecognizer = (_temp =
@@ -78,7 +79,7 @@ function (_Component) {
           formatResults = _this$props.formatResults,
           onResult = _this$props.onResult;
       var formattedResults = formatResults ? formatResults(results) : results;
-      var transcripts = (0, _speechRecognizer.extractTranscripts)(results);
+      var transcripts = (0, _speechRecognizer2.extractTranscripts)(results);
 
       _this.setState({
         results: results,
@@ -146,14 +147,38 @@ function (_Component) {
       })));
     });
 
-    var startSpeechRecognition = props.startSpeechRecognition,
+    _defineProperty(_assertThisInitialized(_this), "verifyStatus", function () {
+      var status = _this.state.status;
+
+      if (status === SpeechRecognizerStatus.FAILED) {
+        return;
+      }
+
+      var startSpeechRecognition = _this.props.startSpeechRecognition;
+      var speechRecognizer = _this.state.speechRecognizer;
+
+      if (startSpeechRecognition && status !== SpeechRecognizerStatus.RECOGNIZING) {
+        speechRecognizer.start();
+        return;
+      }
+
+      if (!startSpeechRecognition && status === SpeechRecognizerStatus.RECOGNIZING) {
+        speechRecognizer.stop();
+
+        _this.setState({
+          status: SpeechRecognizerStatus.STOPPED
+        });
+      }
+    });
+
+    var _startSpeechRecognition = props.startSpeechRecognition,
         grammars = props.grammars,
         continuous = props.continuous,
         interimResults = props.interimResults,
         maxAlternatives = props.maxAlternatives,
         lang = props.lang;
     _this.state = {
-      status: startSpeechRecognition ? SpeechRecognizerStatus.RECOGNIZING : SpeechRecognizerStatus.INACTIVE,
+      status: SpeechRecognizerStatus.INACTIVE,
       results: null,
       formattedResults: null,
       transcripts: [],
@@ -163,74 +188,70 @@ function (_Component) {
     var speechRecognitionConstructor = window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition || window.oSpeechRecognition;
 
     if (!speechRecognitionConstructor) {
-      _this.state.status = SpeechRecognizerStatus.FAILED;
+      _this.state.status = SpeechRecognizerStatus.UNSUPPORTED;
       return _possibleConstructorReturn(_this);
     }
 
-    var speechRecognizer = new speechRecognitionConstructor();
+    var _speechRecognizer = new speechRecognitionConstructor();
 
     if (grammars) {
       // @ts-ignore -- For now...
       var speechGrammarListConstructor = window.SpeechGrammarList || window.webkitSpeechGrammarList;
       var speechGrammarList = new speechGrammarListConstructor();
       speechGrammarList.addFromString(grammars, 10000000);
-      speechRecognizer.grammars = speechGrammarList;
+      _speechRecognizer.grammars = speechGrammarList;
     }
 
-    speechRecognizer.continuous = continuous || DEFAULT_CONFIG.continuous;
-    speechRecognizer.interimResults = interimResults || DEFAULT_CONFIG.interimResults;
-    speechRecognizer.maxAlternatives = maxAlternatives || DEFAULT_CONFIG.maxAlternatives;
-    speechRecognizer.lang = lang || DEFAULT_CONFIG;
+    _speechRecognizer.continuous = continuous || DEFAULT_CONFIG.continuous;
+    _speechRecognizer.interimResults = interimResults || DEFAULT_CONFIG.interimResults;
+    _speechRecognizer.maxAlternatives = maxAlternatives || DEFAULT_CONFIG.maxAlternatives;
+    _speechRecognizer.lang = lang || DEFAULT_CONFIG;
 
-    speechRecognizer.onstart = function (event) {
+    _speechRecognizer.onstart = function (event) {
       return _this.onStart(event);
     };
 
-    speechRecognizer.onresult = function (event) {
+    _speechRecognizer.onaudiostart = function (event) {
+      return _this.onStart(event);
+    };
+
+    _speechRecognizer.onspeechstart = function (event) {
+      return _this.onStart(event);
+    };
+
+    _speechRecognizer.onsoundstart = function (event) {
+      return _this.onStart(event);
+    };
+
+    _speechRecognizer.onresult = function (event) {
       return _this.onResult(event);
     };
 
-    speechRecognizer.onerror = function (error) {
+    _speechRecognizer.onerror = function (error) {
       return _this.onError(error);
     };
 
-    _this.state.speechRecognizer = speechRecognizer;
+    _this.state.speechRecognizer = _speechRecognizer;
     return _this;
   }
 
   _createClass(SpeechRecognizer, [{
     key: "componentDidUpdate",
     value: function componentDidUpdate() {
-      var status = this.state.status;
-
-      if (status === SpeechRecognizerStatus.FAILED) {
-        return;
-      }
-
-      var startSpeechRecognition = this.props.startSpeechRecognition;
-      var speechRecognizer = this.state.speechRecognizer;
-
-      if (startSpeechRecognition && status !== SpeechRecognizerStatus.RECOGNIZING) {
-        speechRecognizer.start();
-        return;
-      }
-
-      if (!startSpeechRecognition && status === SpeechRecognizerStatus.RECOGNIZING) {
-        speechRecognizer.stop();
-        this.setState({
-          status: SpeechRecognizerStatus.STOPPED
-        });
-      }
+      this.verifyStatus();
     }
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      var status = this.state.status;
+      var status = this.state.status; // This can only happen during initialization, so no need to have it as part of `verifyStatus`.
 
-      if (status === SpeechRecognizerStatus.FAILED) {
+      if (status === SpeechRecognizerStatus.UNSUPPORTED) {
         console.error("There was an error at initialisation. \n        Most likely related to SpeechRecognition not being supported by the current browser.\n        Check https://caniuse.com/#feat=speech-recognition for more info");
         this.onError(null);
+        return;
       }
+
+      this.verifyStatus();
     }
   }, {
     key: "render",
