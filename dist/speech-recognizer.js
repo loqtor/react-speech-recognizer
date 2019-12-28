@@ -171,8 +171,7 @@ function (_Component) {
       }
     });
 
-    var _startSpeechRecognition = props.startSpeechRecognition,
-        grammars = props.grammars,
+    var grammars = props.grammars,
         continuous = props.continuous,
         interimResults = props.interimResults,
         maxAlternatives = props.maxAlternatives,
@@ -208,18 +207,6 @@ function (_Component) {
     _speechRecognizer.lang = lang || DEFAULT_CONFIG;
 
     _speechRecognizer.onstart = function (event) {
-      return _this.onStart(event);
-    };
-
-    _speechRecognizer.onaudiostart = function (event) {
-      return _this.onStart(event);
-    };
-
-    _speechRecognizer.onspeechstart = function (event) {
-      return _this.onStart(event);
-    };
-
-    _speechRecognizer.onsoundstart = function (event) {
       return _this.onStart(event);
     };
 
