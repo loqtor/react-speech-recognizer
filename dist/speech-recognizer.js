@@ -195,6 +195,11 @@ function (_Component) {
       this.verifyStatus();
     }
   }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this.speechRecognizer && this.speechRecognizer.stop();
+    }
+  }, {
     key: "render",
     value: function render() {
       var children = this.props.children;
