@@ -2,7 +2,7 @@
 
 ## React Component for Speech Recognition.
 
-Place this component anywhere in your app to get Speech Recognition capabilities, when supported.
+This HOC component allows to get Speech Recognition capabilities into your app. By wrapping your component on it, you can have it changing depending on the transcripts you get back or the `SpeechRecognizer.status`.
 
 It relies on the [Web Speech Recognition API](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition) and if it's not supported in the browser, it logs a `warn`, renders nothing and calls the `onError` prop (if provided).
 
@@ -20,21 +20,19 @@ import { SpeechRecognizer } from 'react-speech-recognizer-component';
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <SpeechRecognizer />
-      </header>
+      <h1>Speech to text test with React Speech Recognizer</h1>
+      <SpeechRecognizer
+        startSpeechRecognition={true}
+        onError={this.onError}
+      >
+          {({status, results, formattedResults, transcripts, error}) => {
+            return (
+              <>
+                {transcripts && transcripts.length && <p>{transcripts.join(', ')}</p>}
+              </>
+            );
+          }}
+      </SpeechRecognizer>
     </div>
   );
 }
@@ -56,22 +54,8 @@ Same as the ones that the `SpeechRecognition` object would accept, plus the one 
 (Some) of the `SpeechRecognition` events are also exposed as `props`.
 
 - `onStart`: Callback run on the `onstart` event of the `SpeechRecognizer` instance.
-- `onResult`: Callback run on the `onresult` event of the `SpeechRecognizer` instance.
 - `onError`: Callback run on the `onerror` event of the `SpeechRecognizer` instance. One of the cases when this is executed when `SpeechRecognition` is not supported by the browser.
 
-It also allows customizing what's render per status:
+### Next steps
 
-- `renderInactiveStatus`: Function that returns the what's to be rendered when `SpeechRecognizer.status === SpeechRecognizerStatus.INACTIVE`. This is the default status, before starting recognition (`startSpeechRecognition` hasn't been `true` yet).
-- `renderRecognizingStatus`: Function that returns the what's to be rendered when `SpeechRecognizer.status === SpeechRecognizerStatus.RECOGNIZING`.
-- `renderStoppedStatus`: Function that returns the what's to be rendered when `SpeechRecognizer.status === SpeechRecognizerStatus.STOPPED`. By default, this status prints what was _recognized_.
-
-There's also the option to render nothing and just use the callbacks and get that _sweet recognition_ in your component.
-
-- `dontRender`: if set to `true`, the component will not render but will still generate the instance of `SpeechRecognition` instance and give you that callback goodness.
-
-## Next steps
-
-1. Expose all of the `SpeechRecognition` events.
-2. Try to put this in TypeScript. I already have a branch in the repo where the entire thing is typed, but I could not get it to properly build into an npm Module.
-3. Actually, perhaps... Redesign the whole thing? I think this could be an Enhancer. More like an HOC and take it from there. But for now, I think it's cool. :)
-
+1. Probably start over with a different idea in mind, based on what I learn while working on [Guess The Movie](https://guess-the-movie-dev.netlify.com/) (repo [here](https://github.com/loqtor/guess-the-movie)). It'd be a [`VoiceCommandRecognizer`](https://github.com/loqtor/voice-command-recognizer) instead. :)
