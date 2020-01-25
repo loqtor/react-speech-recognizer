@@ -94,12 +94,6 @@ export const SpeechRecognizer = class SpeechRecognizer extends Component {
       results,
       formattedResults,
       transcripts,
-    }, () => {
-      if (!onResult) {
-        return;
-      }
-
-      onResult(results, formattedResults, transcripts);
     });
   }
 
@@ -114,53 +108,6 @@ export const SpeechRecognizer = class SpeechRecognizer extends Component {
         onError(error);
       }
     });
-  }
-
-  renderInactiveStatus = () => {
-    const { renderInactiveStatus } = this.props;
-
-    if (renderInactiveStatus) {
-      return renderInactiveStatus(this.props, this.state);
-    }
-
-    return <h2>Ready to start...</h2>;
-  }
-
-  renderRecognizingStatus = () => {
-    const { renderRecognizingStatus } = this.props;
-
-    if (renderRecognizingStatus) {
-      return renderRecognizingStatus(this.props, this.state);
-    }
-
-    return <h2>Recording tags...</h2>;
-  }
-
-  renderStoppedStatus = () => {
-    const { renderStoppedStatus } = this.props;
-
-    if (renderStoppedStatus) {
-      return renderStoppedStatus(this.props, this.state);
-    }
-
-    const { transcripts } = this.state;
-
-    if (!transcripts.length) {
-      return <h2>No transcripts found in speech.</h2>;
-    }
-
-    return (
-      <Fragment>
-        <h2>Transcripts from speech:</h2>
-        <ul>
-          {transcripts.map((transcript, i) => {
-            return (
-              <li key={`transcript-${i}`}>{transcript}</li>
-            )
-          })}
-        </ul>
-      </Fragment>
-    )
   }
 
   verifyStatus = () => {
@@ -210,27 +157,14 @@ export const SpeechRecognizer = class SpeechRecognizer extends Component {
     this.verifyStatus();
   }
 
+  componentWillUnmount() {
+    this.speechRecognizer && this.speechRecognizer.stop();
+  }
+
   render() {
-    const { dontRender } = this.props;
-    const { error, status } = this.state;
+    const { children } = this.props;
+    const { error, formattedResults, results, status, transcripts } = this.state;
 
-    if (dontRender) {
-      return null;
-    }
-
-    if (status === SpeechRecognizerStatus.FAILED) {
-      console.error('There has been an error trying to start recognizing: ', error);
-      return null;
-    }
-
-    if (status === SpeechRecognizerStatus.INACTIVE) {
-      return this.renderInactiveStatus();
-    }
-
-    if (status === SpeechRecognizerStatus.RECOGNIZING) {
-      return this.renderRecognizingStatus();
-    }
-
-    return this.renderStoppedStatus();
+    return <>{children({status, results, formattedResults, transcripts, error})}</>
   }
 }

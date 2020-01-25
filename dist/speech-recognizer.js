@@ -85,12 +85,6 @@ function (_Component) {
         results: results,
         formattedResults: formattedResults,
         transcripts: transcripts
-      }, function () {
-        if (!onResult) {
-          return;
-        }
-
-        onResult(results, formattedResults, transcripts);
       });
     });
 
@@ -105,46 +99,6 @@ function (_Component) {
           onError(error);
         }
       });
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "renderInactiveStatus", function () {
-      var renderInactiveStatus = _this.props.renderInactiveStatus;
-
-      if (renderInactiveStatus) {
-        return renderInactiveStatus(_this.props, _this.state);
-      }
-
-      return _react["default"].createElement("h2", null, "Ready to start...");
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "renderRecognizingStatus", function () {
-      var renderRecognizingStatus = _this.props.renderRecognizingStatus;
-
-      if (renderRecognizingStatus) {
-        return renderRecognizingStatus(_this.props, _this.state);
-      }
-
-      return _react["default"].createElement("h2", null, "Recording tags...");
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "renderStoppedStatus", function () {
-      var renderStoppedStatus = _this.props.renderStoppedStatus;
-
-      if (renderStoppedStatus) {
-        return renderStoppedStatus(_this.props, _this.state);
-      }
-
-      var transcripts = _this.state.transcripts;
-
-      if (!transcripts.length) {
-        return _react["default"].createElement("h2", null, "No transcripts found in speech.");
-      }
-
-      return _react["default"].createElement(_react.Fragment, null, _react["default"].createElement("h2", null, "Transcripts from speech:"), _react["default"].createElement("ul", null, transcripts.map(function (transcript, i) {
-        return _react["default"].createElement("li", {
-          key: "transcript-".concat(i)
-        }, transcript);
-      })));
     });
 
     _defineProperty(_assertThisInitialized(_this), "verifyStatus", function () {
@@ -171,8 +125,7 @@ function (_Component) {
       }
     });
 
-    var _startSpeechRecognition = props.startSpeechRecognition,
-        grammars = props.grammars,
+    var grammars = props.grammars,
         continuous = props.continuous,
         interimResults = props.interimResults,
         maxAlternatives = props.maxAlternatives,
@@ -211,18 +164,6 @@ function (_Component) {
       return _this.onStart(event);
     };
 
-    _speechRecognizer.onaudiostart = function (event) {
-      return _this.onStart(event);
-    };
-
-    _speechRecognizer.onspeechstart = function (event) {
-      return _this.onStart(event);
-    };
-
-    _speechRecognizer.onsoundstart = function (event) {
-      return _this.onStart(event);
-    };
-
     _speechRecognizer.onresult = function (event) {
       return _this.onResult(event);
     };
@@ -256,29 +197,20 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var dontRender = this.props.dontRender;
+      var children = this.props.children;
       var _this$state = this.state,
           error = _this$state.error,
-          status = _this$state.status;
-
-      if (dontRender) {
-        return null;
-      }
-
-      if (status === SpeechRecognizerStatus.FAILED) {
-        console.error('There has been an error trying to start recognizing: ', error);
-        return null;
-      }
-
-      if (status === SpeechRecognizerStatus.INACTIVE) {
-        return this.renderInactiveStatus();
-      }
-
-      if (status === SpeechRecognizerStatus.RECOGNIZING) {
-        return this.renderRecognizingStatus();
-      }
-
-      return this.renderStoppedStatus();
+          formattedResults = _this$state.formattedResults,
+          results = _this$state.results,
+          status = _this$state.status,
+          transcripts = _this$state.transcripts;
+      return _react["default"].createElement(_react["default"].Fragment, null, children({
+        status: status,
+        results: results,
+        formattedResults: formattedResults,
+        transcripts: transcripts,
+        error: error
+      }));
     }
   }]);
 
